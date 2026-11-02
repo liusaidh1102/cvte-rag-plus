@@ -1,0 +1,14 @@
+web/node_modules
+web/.umi
+web/dist
+management/web/node_modules
+management/web/dist
+management/node_modules
+management/server/.venv
+management/server/logs
+**/__pycache__
+**/*.pyc
+.git
+.cache
+.build-tmp
+.uv-cache2

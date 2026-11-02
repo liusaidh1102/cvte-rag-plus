@@ -1,0 +1,20 @@
+services:
+  management-frontend:
+    container_name: cvte-rag-plus-management-frontend
+    image: cvte-rag-plus-management-web:v0.6.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+    ports:
+      - "8888:80"
+    environment:
+      - API_BASE_URL=/api 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - management_network
+
+networks:
+  management_network:
+    driver: bridge

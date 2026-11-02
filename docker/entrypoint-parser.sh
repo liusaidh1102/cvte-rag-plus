@@ -1,0 +1,30 @@
+#!/bin/bash
+
+APP_ROOT="${APP_ROOT:-/app}"
+
+# Render runtime configuration from the mounted templates.
+rm -f "${APP_ROOT}/conf/service_conf.yaml"
+while IFS= read -r line || [[ -n "$line" ]]; do
+    eval "echo \"$line\"" >> "${APP_ROOT}/conf/service_conf.yaml"
+done < "${APP_ROOT}/conf/service_conf.yaml.template"
+
+export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/
+
+PY=python3
+
+CONSUMER_NO_BEG=$1
+CONSUMER_NO_END=$2
+
+function task_exe(){
+    JEMALLOC_PATH=$(pkg-config --variable=libdir jemalloc)/libjemalloc.so
+    while [ 1 -eq 1 ]; do
+      LD_PRELOAD=$JEMALLOC_PATH $PY rag/svr/task_executor.py $1;
+    done
+}
+
+for ((i=CONSUMER_NO_BEG; i<CONSUMER_NO_END; i++))
+do
+  task_exe $i &
+done
+
+wait;
